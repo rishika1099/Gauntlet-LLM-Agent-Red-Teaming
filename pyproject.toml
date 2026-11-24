@@ -1,0 +1,29 @@
+[project]
+name = "jailbreak-gauntlet"
+version = "0.1.0"
+description = "An agent that red-teams other AI agents: recon, tailored multi-turn attacks, pass^k scoring, patch and re-scan"
+requires-python = ">=3.11"
+dependencies = [
+    "fastapi==0.165.0",
+    "uvicorn==0.54.0",
+    "openai-agents[litellm]==0.26.0",
+    "google-cloud-aiplatform>=1.40.0",
+    "httpx==0.28.1",
+    "langfuse==5.2.0",
+    "python-dotenv==1.2.3",
+]
+
+[tool.uv]
+package = false
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
+asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "function"
+
+[dependency-groups]
+dev = [
+    "pytest==9.1.1",
+    "pytest-asyncio==1.5.0",
+]

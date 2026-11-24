@@ -1,0 +1,34 @@
+name: CI
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    env:
+      GAUNTLET_FAKE_LLM: "1"   # CI never has credentials
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+      - run: uv sync --frozen
+      - run: uv run pytest -q -rs
+
+  repo-rules:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: DESIGN.md is at most 1,000 words
+        run: |
+          if [ -f DESIGN.md ]; then
+            n=$(wc -w < DESIGN.md); echo "DESIGN.md: $n words"
+            [ "$n" -le 1000 ] || { echo "::error::DESIGN.md has $n words (max 1000)"; exit 1; }
+          fi
+      - name: No secrets committed
+        run: |
+          if git ls-files | grep -E '(^|/)\.env$|service-account.*\.json$'; then echo "::error::secret file committed"; exit 1; fi
+          if git grep -nE '(AIza[0-9A-Za-z_-]{30,}|sk-[A-Za-z0-9_-]{20,}|sk-lf-[A-Za-z0-9-]{20,})' -- . ':!*.md' ':!uv.lock'; then
+            echo "::error::something that looks like an API key is in the code"; exit 1; fi
+      - name: submission.json has a URL and 3 authors
+        run: python3 -c "import json; d=json.load(open('submission.json')); assert d['deploy_url'].startswith('https://') and len(d['authors'])==3"

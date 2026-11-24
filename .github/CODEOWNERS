@@ -1,0 +1,39 @@
+# A PR touching a path requests that owner's review.
+# Lanes: Rishika = A (attack), Shreya = B (judge + evals) + setup, Kshamaa = C (platform + safety).
+
+# Shared contracts and setup: everyone reviews
+/app.py                       @shreyashetty2 @rishika1099 @KshamaaS
+/gauntlet/schemas.py          @shreyashetty2 @rishika1099 @KshamaaS
+/gauntlet/state.py            @shreyashetty2 @rishika1099 @KshamaaS
+/gauntlet/models.py           @shreyashetty2 @rishika1099 @KshamaaS
+/gauntlet/config.py           @shreyashetty2 @rishika1099 @KshamaaS
+/gauntlet/orchestrator.py     @shreyashetty2 @rishika1099 @KshamaaS
+/cloudbuild.yaml              @shreyashetty2
+/Dockerfile                   @shreyashetty2
+/scripts/                     @shreyashetty2
+
+# Lane A: Rishika
+/gauntlet/attack/             @rishika1099
+/prompts/recon.md             @rishika1099
+/prompts/planner.md           @rishika1099
+/prompts/attacker.md          @rishika1099
+/prompts/critic.md            @rishika1099
+
+# Lane B: Shreya
+/gauntlet/judge/              @shreyashetty2
+/prompts/judge_rubric.md      @shreyashetty2
+/evals/                       @shreyashetty2
+/docs/HILLCLIMB.md            @shreyashetty2
+
+# Lane C: Kshamaa
+/gauntlet/victims/            @KshamaaS
+/gauntlet/adapter.py          @KshamaaS
+/gauntlet/guardrails.py       @KshamaaS
+/gauntlet/tracing.py          @KshamaaS
+/gauntlet/patch.py            @KshamaaS
+/prompts/victim_leaky.md      @KshamaaS
+/prompts/victim_bank.md       @KshamaaS
+/prompts/victim_fort.md       @KshamaaS
+/prompts/patch.md             @KshamaaS
+/static/                      @KshamaaS
+/README.md                    @KshamaaS
