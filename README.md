@@ -5,7 +5,7 @@ writes multi-turn attacks for that specific agent, runs them in parallel, judges
 scores each category with pass@3 and pass^3. Then it suggests a guardrail patch, and once you
 approve it, re-scans to prove the fix worked.
 
-**Live agent:** https://REPLACE-AFTER-FIRST-DEPLOY.run.app
+**Live agent:** https://gauntlet-51889964830.us-central1.run.app
 
 <!--
   Lane C owns this README (issue "[C] Report card UI + README"). Before Dec 9, fill in from the
