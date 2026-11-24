@@ -1,0 +1,115 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 620" width="1000" height="620" role="img" aria-labelledby="t d">
+  <title id="t">Jailbreak Gauntlet architecture</title>
+  <desc id="d">The browser opens one streaming request to a FastAPI app on Cloud Run. The orchestrator runs the attack engine (lane A), the judge and scoring (lane B) and the platform and safety code (lane C), all sharing one ScanState and the typed schemas. Gemini on Vertex AI powers recon, planning, attackers and victims; OpenAI powers the judge and the patch writer; Langfuse stores traces; external agents are reached only over HTTPS and only when allowlisted.</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0L10 5L0 10z" fill="#6b7280"/>
+    </marker>
+    <style>
+      text { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif; fill: #111827; }
+      .title { font-size: 20px; font-weight: 700; }
+      .sub { font-size: 13px; fill: #4b5563; }
+      .name { font-size: 13.5px; font-weight: 600; }
+      .body { font-size: 12px; fill: #374151; }
+      .quiet { font-size: 11.5px; fill: #6b7280; }
+      .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 12px; fill: #1f2937; }
+      .edge { fill: none; stroke: #6b7280; stroke-width: 1.3; }
+    </style>
+  </defs>
+
+  <rect x="0" y="0" width="1000" height="620" fill="#ffffff"/>
+
+  <text class="title" x="32" y="40">Jailbreak Gauntlet architecture</text>
+  <text class="sub" x="32" y="64">A whole scan runs inside one streaming request, so Cloud Run never takes the CPU away mid-scan.</text>
+
+  <!-- Browser -->
+  <rect x="32" y="120" width="180" height="140" rx="10" fill="#f9fafb" stroke="#9ca3af" stroke-width="1.3"/>
+  <text class="name" x="122" y="148" text-anchor="middle">Browser</text>
+  <text class="mono" x="122" y="170" text-anchor="middle">static/index.html</text>
+  <text class="body" x="122" y="198" text-anchor="middle">pick a victim</text>
+  <text class="body" x="122" y="218" text-anchor="middle">watch live progress</text>
+  <text class="body" x="122" y="238" text-anchor="middle">approve a patch</text>
+
+  <path class="edge" d="M212 165H288" marker-end="url(#arrow)"/>
+  <text class="quiet" x="250" y="157" text-anchor="middle">request</text>
+  <path class="edge" d="M290 215H214" marker-end="url(#arrow)"/>
+  <text class="quiet" x="251" y="207" text-anchor="middle">SSE events</text>
+
+  <!-- Cloud Run service -->
+  <rect x="290" y="96" width="460" height="500" rx="14" fill="#f8fafc" stroke="#6b7280" stroke-width="1.5"/>
+  <text class="name" x="310" y="124" style="font-size:15px">Cloud Run service</text>
+  <text class="quiet" x="310" y="144">timeout 900 s · exactly 1 instance · auto-deploy from main</text>
+
+  <rect x="314" y="162" width="412" height="52" rx="8" fill="#ffffff" stroke="#9ca3af" stroke-width="1.2"/>
+  <text class="name" x="330" y="184">FastAPI app</text>
+  <text class="mono" x="330" y="203">app.py   /api/scan   /api/patch   /victims/*</text>
+
+  <path class="edge" d="M520 214V230" marker-end="url(#arrow)"/>
+
+  <rect x="314" y="232" width="412" height="52" rx="8" fill="#ffffff" stroke="#9ca3af" stroke-width="1.2"/>
+  <text class="name" x="330" y="254">Orchestrator</text>
+  <text class="body" x="330" y="273">guardrail → recon → plan → fan-out → judge → score</text>
+
+  <path class="edge" d="M378 284V302" marker-end="url(#arrow)"/>
+  <path class="edge" d="M520 284V302" marker-end="url(#arrow)"/>
+  <path class="edge" d="M662 284V302" marker-end="url(#arrow)"/>
+
+  <!-- Lane A -->
+  <rect x="314" y="304" width="128" height="168" rx="8" fill="#eff6ff" stroke="#2563eb" stroke-width="1.6"/>
+  <text class="name" x="378" y="328" text-anchor="middle">Attack engine</text>
+  <text class="quiet" x="378" y="346" text-anchor="middle" style="fill:#1d4ed8">lane A</text>
+  <text class="mono" x="378" y="374" text-anchor="middle">recon.py</text>
+  <text class="mono" x="378" y="394" text-anchor="middle">planner.py</text>
+  <text class="mono" x="378" y="414" text-anchor="middle">fanout.py</text>
+  <text class="mono" x="378" y="434" text-anchor="middle">refine.py</text>
+
+  <!-- Lane B -->
+  <rect x="456" y="304" width="128" height="168" rx="8" fill="#f5f3ff" stroke="#7c3aed" stroke-width="1.6"/>
+  <text class="name" x="520" y="328" text-anchor="middle">Judge + scoring</text>
+  <text class="quiet" x="520" y="346" text-anchor="middle" style="fill:#6d28d9">lane B</text>
+  <text class="mono" x="520" y="374" text-anchor="middle">judge.py</text>
+  <text class="mono" x="520" y="394" text-anchor="middle">canary.py</text>
+  <text class="mono" x="520" y="414" text-anchor="middle">scoring.py</text>
+  <text class="mono" x="520" y="434" text-anchor="middle">evals/</text>
+
+  <!-- Lane C -->
+  <rect x="598" y="304" width="128" height="168" rx="8" fill="#ecfdf5" stroke="#059669" stroke-width="1.6"/>
+  <text class="name" x="662" y="328" text-anchor="middle" style="font-size:12.5px">Platform + safety</text>
+  <text class="quiet" x="662" y="346" text-anchor="middle" style="fill:#047857">lane C</text>
+  <text class="mono" x="662" y="374" text-anchor="middle">guardrails.py</text>
+  <text class="mono" x="662" y="394" text-anchor="middle">adapter.py</text>
+  <text class="mono" x="662" y="414" text-anchor="middle">victims/</text>
+  <text class="mono" x="662" y="434" text-anchor="middle">patch.py</text>
+  <text class="mono" x="662" y="454" text-anchor="middle">tracing.py</text>
+
+  <!-- Shared contracts -->
+  <rect x="314" y="488" width="412" height="40" rx="8" fill="#ffffff" stroke="#9ca3af" stroke-width="1.2"/>
+  <text x="330" y="513"><tspan class="mono">state.py</tspan><tspan class="body" dx="10">ScanState: target, time budget, live events, token use</tspan></text>
+  <rect x="314" y="540" width="412" height="40" rx="8" fill="#ffffff" stroke="#9ca3af" stroke-width="1.2"/>
+  <text x="330" y="565"><tspan class="mono">schemas.py</tspan><tspan class="body" dx="10">typed contracts every agent reads and writes</tspan></text>
+
+  <!-- External services -->
+  <path class="edge" d="M750 188H790" marker-end="url(#arrow)"/>
+  <rect x="792" y="150" width="176" height="76" rx="8" fill="#ffffff" stroke="#9ca3af" stroke-width="1.2"/>
+  <text class="name" x="880" y="174" text-anchor="middle">Gemini on Vertex AI</text>
+  <text class="body" x="880" y="194" text-anchor="middle">recon, planner,</text>
+  <text class="body" x="880" y="212" text-anchor="middle">attackers, victims</text>
+
+  <path class="edge" d="M750 284H790" marker-end="url(#arrow)"/>
+  <rect x="792" y="246" width="176" height="76" rx="8" fill="#ffffff" stroke="#9ca3af" stroke-width="1.2"/>
+  <text class="name" x="880" y="270" text-anchor="middle">OpenAI</text>
+  <text class="body" x="880" y="290" text-anchor="middle">judge + patch writer</text>
+  <text class="body" x="880" y="308" text-anchor="middle">(a different provider)</text>
+
+  <path class="edge" d="M750 380H790" marker-end="url(#arrow)"/>
+  <rect x="792" y="342" width="176" height="76" rx="8" fill="#ffffff" stroke="#9ca3af" stroke-width="1.2"/>
+  <text class="name" x="880" y="366" text-anchor="middle">Langfuse</text>
+  <text class="body" x="880" y="386" text-anchor="middle">one trace per scan,</text>
+  <text class="body" x="880" y="404" text-anchor="middle">public for zoo scans only</text>
+
+  <path class="edge" d="M750 476H790" marker-end="url(#arrow)"/>
+  <rect x="792" y="438" width="176" height="76" rx="8" fill="#ffffff" stroke="#9ca3af" stroke-width="1.2"/>
+  <text class="name" x="880" y="462" text-anchor="middle">External agent</text>
+  <text class="body" x="880" y="482" text-anchor="middle">HTTPS + allowlist,</text>
+  <text class="body" x="880" y="500" text-anchor="middle">with the owner's consent</text>
+</svg>
