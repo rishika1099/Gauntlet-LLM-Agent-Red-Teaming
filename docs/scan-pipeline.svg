@@ -1,0 +1,124 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 520" width="1000" height="520" role="img" aria-labelledby="t d">
+  <title id="t">One Gauntlet scan, step by step</title>
+  <desc id="d">A scan checks the target against the allowlist, runs recon, plans 12 tailored attacks, filters them for safety, then runs every attack 3 times in parallel for up to 4 turns. The judge checks canary strings first and then applies its rubric; scoring computes pass@3 and pass^3 and grades each category; the report card shows evidence and a suggested patch. If you approve the patch, a re-scan runs the same pipeline on a patched test copy for the failed categories only. On full scans, a critic rewrites failed attacks and they run again, for at most 2 rounds.</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0L10 5L0 10z" fill="#6b7280"/>
+    </marker>
+    <marker id="arrow-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0L10 5L0 10z" fill="#2563eb"/>
+    </marker>
+    <style>
+      text { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif; fill: #111827; }
+      .title { font-size: 20px; font-weight: 700; }
+      .sub { font-size: 13px; fill: #4b5563; }
+      .name { font-size: 13.5px; font-weight: 600; }
+      .body { font-size: 12px; fill: #374151; }
+      .quiet { font-size: 11.5px; fill: #6b7280; }
+      .edge { fill: none; stroke: #6b7280; stroke-width: 1.3; }
+      .a { fill: #eff6ff; stroke: #2563eb; stroke-width: 1.6; }
+      .b { fill: #f5f3ff; stroke: #7c3aed; stroke-width: 1.6; }
+      .c { fill: #ecfdf5; stroke: #059669; stroke-width: 1.6; }
+      .you { fill: #fffbeb; stroke: #d97706; stroke-width: 1.6; }
+    </style>
+  </defs>
+
+  <rect x="0" y="0" width="1000" height="520" fill="#ffffff"/>
+
+  <text class="title" x="32" y="40">One scan, step by step</text>
+  <text class="sub" x="32" y="64">Quick scans skip the critic rounds and stop at a 4-minute budget, so every grader task fits in 5 minutes.</text>
+
+  <!-- Legend -->
+  <rect class="a" x="32" y="82" width="14" height="14" rx="3"/>
+  <text class="quiet" x="52" y="94">lane A: attack</text>
+  <rect class="b" x="152" y="82" width="14" height="14" rx="3"/>
+  <text class="quiet" x="172" y="94">lane B: judge + evals</text>
+  <rect class="c" x="310" y="82" width="14" height="14" rx="3"/>
+  <text class="quiet" x="330" y="94">lane C: platform + safety</text>
+  <rect class="you" x="490" y="82" width="14" height="14" rx="3"/>
+  <text class="quiet" x="510" y="94">you</text>
+
+  <!-- Row 1, left to right -->
+  <rect class="c" x="32" y="120" width="164" height="80" rx="8"/>
+  <text class="name" x="114" y="148" text-anchor="middle">1. Target check</text>
+  <text class="body" x="114" y="168" text-anchor="middle">zoo victim, or a URL</text>
+  <text class="body" x="114" y="186" text-anchor="middle">on the allowlist</text>
+
+  <path class="edge" d="M196 160H222" marker-end="url(#arrow)"/>
+
+  <rect class="a" x="224" y="120" width="164" height="80" rx="8"/>
+  <text class="name" x="306" y="148" text-anchor="middle">2. Recon</text>
+  <text class="body" x="306" y="168" text-anchor="middle">5 normal chat turns,</text>
+  <text class="body" x="306" y="186" text-anchor="middle">builds a target profile</text>
+
+  <path class="edge" d="M388 160H414" marker-end="url(#arrow)"/>
+
+  <rect class="a" x="416" y="120" width="164" height="80" rx="8"/>
+  <text class="name" x="498" y="148" text-anchor="middle">3. Plan</text>
+  <text class="body" x="498" y="168" text-anchor="middle">12 attacks, 2 per</text>
+  <text class="body" x="498" y="186" text-anchor="middle">category, tailored</text>
+
+  <path class="edge" d="M580 160H606" marker-end="url(#arrow)"/>
+
+  <rect class="c" x="608" y="120" width="164" height="80" rx="8"/>
+  <text class="name" x="690" y="148" text-anchor="middle">4. Safety filter</text>
+  <text class="body" x="690" y="168" text-anchor="middle">drops real-harm asks,</text>
+  <text class="body" x="690" y="186" text-anchor="middle">caps the attack count</text>
+
+  <path class="edge" d="M772 160H798" marker-end="url(#arrow)"/>
+
+  <rect class="a" x="800" y="120" width="164" height="80" rx="8"/>
+  <text class="name" x="882" y="148" text-anchor="middle">5. Parallel fan-out</text>
+  <text class="body" x="882" y="168" text-anchor="middle">12 attacks x 3 runs,</text>
+  <text class="body" x="882" y="186" text-anchor="middle">up to 4 turns each</text>
+
+  <!-- Down to the judge -->
+  <path class="edge" d="M882 200V298" marker-end="url(#arrow)"/>
+  <text class="quiet" x="874" y="254" text-anchor="end">transcripts</text>
+
+  <!-- Row 2, right to left -->
+  <rect class="b" x="800" y="300" width="164" height="80" rx="8"/>
+  <text class="name" x="882" y="328" text-anchor="middle">6. Judge</text>
+  <text class="body" x="882" y="348" text-anchor="middle">canary strings first,</text>
+  <text class="body" x="882" y="366" text-anchor="middle">then the rubric judge</text>
+
+  <path class="edge" d="M800 340H774" marker-end="url(#arrow)"/>
+
+  <rect class="b" x="608" y="300" width="164" height="80" rx="8"/>
+  <text class="name" x="690" y="328" text-anchor="middle">7. Score</text>
+  <text class="body" x="690" y="348" text-anchor="middle">pass@3 and pass^3,</text>
+  <text class="body" x="690" y="366" text-anchor="middle">a grade per category</text>
+
+  <path class="edge" d="M608 340H582" marker-end="url(#arrow)"/>
+
+  <rect class="c" x="416" y="300" width="164" height="80" rx="8"/>
+  <text class="name" x="498" y="328" text-anchor="middle">8. Report card</text>
+  <text class="body" x="498" y="348" text-anchor="middle">evidence, trace link,</text>
+  <text class="body" x="498" y="366" text-anchor="middle">a suggested patch</text>
+
+  <path class="edge" d="M416 340H380" marker-end="url(#arrow)"/>
+
+  <polygon class="you" points="306,296 378,340 306,384 234,340"/>
+  <text class="name" x="306" y="336" text-anchor="middle">9. Approve</text>
+  <text class="body" x="306" y="354" text-anchor="middle">the patch?</text>
+
+  <path class="edge" d="M234 340H198" marker-end="url(#arrow)"/>
+  <text class="quiet" x="216" y="330" text-anchor="middle">yes</text>
+  <path class="edge" d="M306 384V420" marker-end="url(#arrow)"/>
+  <text class="quiet" x="306" y="438" text-anchor="middle">no: nothing changes</text>
+
+  <rect class="c" x="32" y="300" width="164" height="80" rx="8"/>
+  <text class="name" x="114" y="328" text-anchor="middle">10. Re-scan</text>
+  <text class="body" x="114" y="348" text-anchor="middle">patched test copy,</text>
+  <text class="body" x="114" y="366" text-anchor="middle">failed categories only</text>
+
+  <!-- Re-scan loops back to the start -->
+  <path class="edge" d="M114 300V202" marker-end="url(#arrow)"/>
+  <text class="quiet" x="124" y="254">same pipeline, then before vs. after</text>
+
+  <!-- Critic loop (full scans only) -->
+  <path d="M964 340H984V160H966" fill="none" stroke="#2563eb" stroke-width="1.5" stroke-dasharray="5 4" marker-end="url(#arrow-a)"/>
+
+  <line x1="32" y1="484" x2="72" y2="484" stroke="#2563eb" stroke-width="1.5" stroke-dasharray="5 4"/>
+  <text class="body" x="82" y="488">Full scans only: a critic rewrites each failed attack from the judge's reason, then it runs again (at most 2 rounds).</text>
+</svg>
