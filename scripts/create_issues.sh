@@ -9,7 +9,7 @@ A_GH="${A_GH:-}"; B_GH="${B_GH:-}"; C_GH="${C_GH:-}"
 echo "Repo: $REPO"
 
 for l in "lane A: attack:1d76db" "lane B: judge+evals:0e8a16" "lane C: platform+safety:d93f0b" "shared:5319e7" "concept:fbca04" "demo:c5def5"; do
-  IFS=: read -r name color <<<"$l"; gh label create "$name" --color "$color" --force >/dev/null
+  name="${l%:*}"; color="${l##*:}"; gh label create "$name" --color "$color" --force >/dev/null
 done
 
 ms() { gh api "repos/$REPO/milestones" -f title="$1" -f due_on="$2" -f description="$3" >/dev/null 2>&1 || true; }
