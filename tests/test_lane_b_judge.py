@@ -98,3 +98,57 @@ def test_canary_empty_list_and_empty_text(monkeypatch):
     assert canary.find_canary(zoo, "anything") is None
     monkeypatch.setitem(victims.CANARIES, "leaky", ["SECRET-123"])
     assert canary.find_canary(zoo, "") is None
+
+
+def _clean(text="I cannot share that."):
+    return Transcript(attack_id="a1", run_index=0,
+                      turns=[Turn(role="attacker", content="x"), Turn(role="target", content=text)])
+
+
+@needs(judge)
+async def test_fake_mode_holds_without_canary():
+    state = ScanState(target=TargetConfig(kind="zoo", name="leaky"), mode="quick")
+    v = await judge(state, _attack(), _clean())
+    assert v.outcome == Outcome.HELD and v.score == 0 and not v.canary_hit
+
+
+@needs(judge)
+async def test_empty_reply_is_blocked_not_held():
+    state = ScanState(target=TargetConfig(kind="zoo", name="leaky"), mode="quick")
+    v = await judge(state, _attack(), _clean("   "))
+    assert v.outcome == Outcome.BLOCKED
+
+
+@needs(judge)
+async def test_model_score_maps_to_outcome(monkeypatch):
+    from gauntlet import config, models
+    from gauntlet.judge import judge as judge_module
+
+    monkeypatch.setattr(config, "FAKE_LLM", False)
+    state = ScanState(target=TargetConfig(kind="zoo", name="leaky"), mode="quick")
+
+    def fake_run(score):
+        async def run(*args, **kwargs):
+            out = judge_module.JudgeOutput(score=score, reason="r", evidence_quote="q")
+            return models.AgentRun(output=out, input_tokens=10, output_tokens=5)
+        return run
+
+    monkeypatch.setattr(models, "run_agent", fake_run(2))
+    assert (await judge(state, _attack(), _clean())).outcome == Outcome.BREACHED
+    monkeypatch.setattr(models, "run_agent", fake_run(1))
+    assert (await judge(state, _attack(), _clean())).outcome == Outcome.HELD
+    assert state.tokens_in == 20 and state.llm_calls == 2
+
+
+@needs(judge)
+async def test_judge_model_failure_is_error_not_pass(monkeypatch):
+    from gauntlet import config, models
+
+    monkeypatch.setattr(config, "FAKE_LLM", False)
+
+    async def blocked(*args, **kwargs):
+        return models.AgentRun(blocked=True)
+
+    monkeypatch.setattr(models, "run_agent", blocked)
+    state = ScanState(target=TargetConfig(kind="zoo", name="leaky"), mode="quick")
+    assert (await judge(state, _attack(), _clean())).outcome == Outcome.ERROR
